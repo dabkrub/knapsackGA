@@ -40,8 +40,8 @@ class GFG {
     int W=scanner.nextInt();
     for(int i=0;i<n;i++)
     {
-        wt[i] = scanner.nextInt();
         val[i] = scanner.nextInt();
+        wt[i] = scanner.nextInt();
     }
  
     System.out.println("\n"+knapSack(W, wt, val, n)+"\n");

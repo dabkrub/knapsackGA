@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -32,8 +31,8 @@ public class geneticAlgorithm {
             this.item_amount = scanner.nextInt();
             this.weight_limit = scanner.nextInt();
             for (int i = 0; i < this.item_amount; i++) {
-                this.item_weight[i] = scanner.nextInt();
                 this.item_value[i] = scanner.nextInt();
+                this.item_weight[i] = scanner.nextInt();
             }
             scanner.close();
         } catch (FileNotFoundException e) {
@@ -49,9 +48,9 @@ public class geneticAlgorithm {
             this.weight_limit = scanner.nextInt();
             for(int i=0; i<this.item_amount; i++)
             {
-                this.item_weight[i] = scanner.nextInt();
                 this.item_value[i] = scanner.nextInt();
-            }
+                this.item_weight[i] = scanner.nextInt();
+            } 
         }
         catch(FileNotFoundException e)
         {
@@ -169,7 +168,7 @@ public class geneticAlgorithm {
     public void generateAllChromosomes()
     {
         for (int i = 0; i < this.population; i++) {
-            chromosome[i] = generateChromosome2();
+            chromosome[i] = generateChromosome3();
         }
     }
 
@@ -310,7 +309,7 @@ public class geneticAlgorithm {
         {
             if(maxString.equals(chromosome[i])) count++;
         }
-        if((count/this.population)*100>=this.stop)
+        if(count>=this.stop)
         {
             System.out.println("ending boi");
             return true;
@@ -318,7 +317,7 @@ public class geneticAlgorithm {
         return false;
     }
     public static void main(String[] args){
-        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt",200,100,5,0,80);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt",20,100,5,0,10000);
         ga.printInput();
         long start,end;
         start=System.nanoTime();
