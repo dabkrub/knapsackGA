@@ -1,17 +1,29 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 public class geneticAlgorithm {
     private int item_amount;
     private int weight_limit;
-    private int[] item_weight = new int[500];
-    private int[] item_value = new int[500];;
+    private int[] item_weight = new int[4000];
+    private int[] item_value = new int[4000];
     private int population;
     private int mutation_rate;
     private int elitism;
     private int generation;
+    private int stop;
+    private String[] chromosome = new String[4000];
+
+    class fitnessComparator implements Comparator<String> {
+        @Override
+        public int compare(String a, String b) {
+            return fitness(b)-fitness(a);
+        }
+    }
 
     public geneticAlgorithm(String filename) {
         try {
@@ -29,7 +41,7 @@ public class geneticAlgorithm {
         }
     }
 
-    public geneticAlgorithm(String filename, int population, int mutation_rate, int elitism,int generation) {
+    public geneticAlgorithm(String filename, int population, int mutation_rate, int elitism,int generation,int stop) {
         try{
             File file = new File(filename);
             Scanner scanner = new Scanner(file);
@@ -49,6 +61,7 @@ public class geneticAlgorithm {
         this.mutation_rate = mutation_rate;
         this.elitism = elitism;
         this.generation = generation;
+        this.stop=stop;
     }
 
     public void printInput(){
@@ -63,12 +76,43 @@ public class geneticAlgorithm {
         System.out.println("");
     }
 
-    public String generateChromosome(){
+    public String generateChromosome1(){
         String chromosome = "";
         Random rand = new Random();
-        for(int i=0;i<this.population;i++){
+        for(int i=0;i<this.item_amount;i++){
             chromosome+=String.valueOf(rand.nextInt(2));
         }
+        return chromosome;
+    }
+
+    public String generateChromosome2(){
+        int a=0;
+        String chromosome="";
+        for(int i=0;i<this.item_amount;i++){
+            chromosome+="0";
+        }
+        Random rand = new Random();
+        int[] selected = new int[item_amount];
+        for(int i=0;fitness(chromosome)>=0;i++)
+        {
+            a = rand.nextInt(item_amount-1);
+            chromosome = chromosome.substring(0, a) + '1' + chromosome.substring(a+1,item_amount);
+            // System.out.println(chromosome+" "+fitness(chromosome));
+        }
+        chromosome = chromosome.substring(0, a) + '0' + chromosome.substring(a + 1, item_amount);
+        return chromosome;
+    }
+
+    public String generateChromosome3() {
+        int a = 0;
+        String chromosome = "";
+        for (int i = 0; i < this.item_amount; i++) {
+            chromosome += "0";
+        }
+        Random rand = new Random();
+            a = rand.nextInt(item_amount - 1);
+            chromosome = chromosome.substring(0, a) + '1' + chromosome.substring(a + 1, item_amount);
+            // System.out.println(chromosome+" "+fitness(chromosome));
         return chromosome;
     }
 
@@ -82,11 +126,12 @@ public class geneticAlgorithm {
                 point+=this.item_value[i];
                 weight+=this.item_weight[i];
             }
-            if(weight>this.weight_limit)
-            {
-                return 0;
-            }
+            // if(weight>this.weight_limit)
+            // {
+            //     return 0;
+            // }
         }
+        if(weight>weight_limit) return -point;
         return point;
     }
 
@@ -121,13 +166,115 @@ public class geneticAlgorithm {
         return chromosome;
     }
 
+    public void generateAllChromosomes()
+    {
+        for (int i = 0; i < this.population; i++) {
+            chromosome[i] = generateChromosome1();
+        }
+    }
+
+    public void mutationAllChromosomes()
+    {
+        for (int i = (this.population*elitism/100<=0?3: this.population * elitism / 100); i < this.population; i++) {
+            chromosome[i] = mutation(chromosome[i]);
+        }
+    }
+
+    public void crossoverAllChromosomes()
+    {
+        String[] copy = new String[chromosome.length];
+        Random rand = new Random();
+        for(int i=0;i<((this.population*elitism/100<0?1: this.population * elitism / 100)<=0?3: this.population * elitism / 100);i++)
+        {
+            copy[i] = chromosome[i];
+        }
+        for (int i = ((this.population*elitism/100<0?1: this.population * elitism / 100)<=0?3: this.population * elitism / 100); i < this.population; i++)
+        {
+            int a =rand.nextInt(this.population);
+            int b= rand.nextInt(this.population);
+            copy[i] = crossover(chromosome[a],chromosome[b]);
+        }
+        chromosome = copy.clone();
+    }
+
+    public void sortByFitness() {
+        Arrays.sort(chromosome,0,population,new fitnessComparator());
+    }
+
+    public String findKnapsack()
+    {
+        String maxString ="";
+        int count =0;
+        generateAllChromosomes();
+        // printChromosome(0);
+        if(generation==0)
+        {
+            for (int i = 0; true; i++) {
+                sortByFitness();
+                if (chromosome[0] == maxString) {
+                    count++;
+                } else
+                count = 0;
+                
+                if (count > stop&&fitness(maxString)>0) {
+                    printAnswer(i + 1, fitness(maxString));
+                    return maxString;
+                }
+                
+                maxString = chromosome[0];
+                // printChromosome(i + 1);
+                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString));
+                crossoverAllChromosomes();
+                mutationAllChromosomes();
+            }
+        }
+        else
+            for(int i=0;i<this.generation;i++)
+            {
+                sortByFitness();
+                if(chromosome[0]==maxString)
+                {
+                    count++;
+                }
+                else count=0;
+                
+                if(count>stop)
+                {
+                    printAnswer(i+1,fitness(maxString));
+                    return maxString;
+                }
+                maxString = chromosome[0];
+                printChromosome(i+1);
+                System.out.println("Best of Generation "+(i+1)+" : "+ fitness(maxString));
+                crossoverAllChromosomes();
+                mutationAllChromosomes();
+            }
+        printAnswer(generation, fitness(maxString));
+        return maxString;
+    }
+
+    public void printChromosome(int gen)
+    {
+        System.out.println("\nGeneration: "+gen);
+        for(int i=0;i<this.population; i++)
+        {
+            System.out.println(chromosome[i]+" "+fitness(chromosome[i]));
+        }
+    }
+
+    public void printAnswer(int gen,int answer)
+    {
+        System.out.println("\nAfter "+gen+" generations, best value is : "+answer);
+    }
+
     public static void main(String[] args){
-        geneticAlgorithm ga = new geneticAlgorithm("testcase.txt",10,10,100,10);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt",1000,20,1,0,500);
         ga.printInput();
-        String random = ga.generateChromosome();
-        String mutant = ga.mutation(random);
-        System.out.println(random);
-        System.out.println(mutant);
+        long start,end;
+        start=System.nanoTime();
+        ga.findKnapsack();
+        end=System.nanoTime();
+        System.out.println("Using "+((end-start)/ 1000000)+" milliseconds\n");
     }
 
 }
