@@ -169,13 +169,13 @@ public class geneticAlgorithm {
     public void generateAllChromosomes()
     {
         for (int i = 0; i < this.population; i++) {
-            chromosome[i] = generateChromosome1();
+            chromosome[i] = generateChromosome2();
         }
     }
 
     public void mutationAllChromosomes()
     {
-        for (int i = (this.population*elitism/100<=0?3: this.population * elitism / 100); i < this.population; i++) {
+        for (int i = 3; i < this.population; i++) {
             chromosome[i] = mutation(chromosome[i]);
         }
     }
@@ -184,14 +184,49 @@ public class geneticAlgorithm {
     {
         String[] copy = new String[chromosome.length];
         Random rand = new Random();
-        for(int i=0;i<((this.population*elitism/100<0?1: this.population * elitism / 100)<=0?3: this.population * elitism / 100);i++)
+        for(int i=0;i<3;i++)
         {
             copy[i] = chromosome[i];
         }
-        for (int i = ((this.population*elitism/100<0?1: this.population * elitism / 100)<=0?3: this.population * elitism / 100); i < this.population; i++)
+        for (int i = 3; i < this.population; i++)
         {
-            int a =rand.nextInt(this.population);
-            int b= rand.nextInt(this.population);
+            int a=0;
+            int b=0;
+            int rank = rand.nextInt(100);
+            if(rank<5)
+            {
+                a = rand.nextInt(this.population*1/4 -1)+ this.population*3/4 ;
+            }
+            else if(rank<15)
+            {
+                a = rand.nextInt(this.population*1/4 - 1) + this.population * 2 / 4 ;
+            }
+            else if(rank<40)
+            {
+                a = rand.nextInt(this.population*1/4 - 1) + this.population * 1 / 4 ;
+            }
+            else
+            {
+                a = rand.nextInt(this.population*1/4 - 1) ;
+            }
+            rank = rand.nextInt(100);
+            if(rank<5)
+            {
+                b = rand.nextInt(this.population*1/4 - 1)+ this.population*3/4 ;
+            }
+            else if(rank<15)
+            {
+                b = rand.nextInt(this.population*1/4 - 1) + this.population * 2 / 4 ;
+            }
+            else if(rank<40)
+            {
+                b = rand.nextInt(this.population*1/4 - 1) + this.population * 1 / 4;
+            }
+            else
+            {
+                b = rand.nextInt(this.population*1/4 - 1);
+            }
+            
             copy[i] = crossover(chromosome[a],chromosome[b]);
         }
         chromosome = copy.clone();
@@ -211,12 +246,13 @@ public class geneticAlgorithm {
         {
             for (int i = 0; true; i++) {
                 sortByFitness();
+
                 if (chromosome[0] == maxString) {
                     count++;
                 } else
                 count = 0;
                 
-                if (count > stop&&fitness(maxString)>0) {
+                if (isEnd(maxString)) {
                     printAnswer(i + 1, fitness(maxString));
                     return maxString;
                 }
@@ -238,13 +274,13 @@ public class geneticAlgorithm {
                 }
                 else count=0;
                 
-                if(count>stop)
+                if(count>stop||isEnd(maxString))
                 {
                     printAnswer(i+1,fitness(maxString));
                     return maxString;
                 }
                 maxString = chromosome[0];
-                printChromosome(i+1);
+                // printChromosome(i+1);
                 System.out.println("Best of Generation "+(i+1)+" : "+ fitness(maxString));
                 crossoverAllChromosomes();
                 mutationAllChromosomes();
@@ -267,8 +303,22 @@ public class geneticAlgorithm {
         System.out.println("\nAfter "+gen+" generations, best value is : "+answer);
     }
 
+    public boolean isEnd(String maxString)
+    {
+        int count =0;
+        for(int i=0;i<this.population;i++)
+        {
+            if(maxString.equals(chromosome[i])) count++;
+        }
+        if((count/this.population)*100>=this.stop)
+        {
+            System.out.println("ending boi");
+            return true;
+        }
+        return false;
+    }
     public static void main(String[] args){
-        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt",1000,20,1,0,500);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt",200,100,5,0,80);
         ga.printInput();
         long start,end;
         start=System.nanoTime();
