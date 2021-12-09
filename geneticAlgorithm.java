@@ -174,7 +174,7 @@ public class geneticAlgorithm {
 
     public void mutationAllChromosomes()
     {
-        for (int i = 3; i < this.population; i++) {
+        for (int i = elitism; i < this.population; i++) {
             chromosome[i] = mutation(chromosome[i]);
         }
     }
@@ -183,11 +183,11 @@ public class geneticAlgorithm {
     {
         String[] copy = new String[chromosome.length];
         Random rand = new Random();
-        for(int i=0;i<3;i++)
+        for(int i=0;i<elitism;i++)
         {
             copy[i] = chromosome[i];
         }
-        for (int i = 3; i < this.population; i++)
+        for (int i = elitism; i < this.population; i++)
         {
             int a=0;
             int b=0;
@@ -196,11 +196,11 @@ public class geneticAlgorithm {
             {
                 a = rand.nextInt(this.population*1/4 -1)+ this.population*3/4 ;
             }
-            else if(rank<15)
+            else if(rank<10)
             {
                 a = rand.nextInt(this.population*1/4 - 1) + this.population * 2 / 4 ;
             }
-            else if(rank<40)
+            else if(rank<35)
             {
                 a = rand.nextInt(this.population*1/4 - 1) + this.population * 1 / 4 ;
             }
@@ -251,7 +251,7 @@ public class geneticAlgorithm {
                 } else
                 count = 0;
                 
-                if (isEnd(maxString)) {
+                if (count>this.stop) {
                     printAnswer(i + 1, fitness(maxString));
                     return maxString;
                 }
@@ -273,7 +273,7 @@ public class geneticAlgorithm {
                 }
                 else count=0;
                 
-                if(count>stop||isEnd(maxString))
+                if(count > this.stop)
                 {
                     printAnswer(i+1,fitness(maxString));
                     return maxString;
@@ -302,28 +302,14 @@ public class geneticAlgorithm {
         System.out.println("\nAfter "+gen+" generations, best value is : "+answer);
     }
 
-    public boolean isEnd(String maxString)
-    {
-        int count =0;
-        for(int i=0;i<this.population;i++)
-        {
-            if(maxString.equals(chromosome[i])) count++;
-        }
-        if(count>=this.stop)
-        {
-            System.out.println("ending boi");
-            return true;
-        }
-        return false;
-    }
     public static void main(String[] args){
-        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt",20,100,5,0,10000);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase3.txt",20,400,3,0,50000);
         ga.printInput();
         long start,end;
         start=System.nanoTime();
         ga.findKnapsack();
         end=System.nanoTime();
-        System.out.println("Using "+((end-start)/ 1000000)+" milliseconds\n");
+        System.out.println("Using "+((end-start)/ 1000000)+" milliseconds "+"\n");
     }
 
 }
