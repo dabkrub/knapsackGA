@@ -51,6 +51,7 @@ public class geneticAlgorithm {
                 this.item_value[i] = scanner.nextInt();
                 this.item_weight[i] = scanner.nextInt();
             }
+            scanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         }
@@ -174,21 +175,21 @@ public class geneticAlgorithm {
             int a = 0;
             int b = 0;
             int rank = rand.nextInt(100);
-            if (rank < 5) {
+            if (rank < 9) {
                 a = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 3 / 4;
-            } else if (rank < 15) {
+            } else if (rank < 22) {
                 a = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 2 / 4;
-            } else if (rank < 40) {
+            } else if (rank < 45) {
                 a = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 1 / 4;
             } else {
                 a = rand.nextInt(this.population * 1 / 4 - 1);
             }
             rank = rand.nextInt(100);
-            if (rank < 5) {
+            if (rank < 9) {
                 b = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 3 / 4;
-            } else if (rank < 15) {
+            } else if (rank < 22) {
                 b = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 2 / 4;
-            } else if (rank < 40) {
+            } else if (rank < 45) {
                 b = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 1 / 4;
             } else {
                 b = rand.nextInt(this.population * 1 / 4 - 1);
@@ -223,8 +224,11 @@ public class geneticAlgorithm {
                 }
 
                 maxString = chromosome[0];
-                //printChromosome(i + 1);
-                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString));
+                float percent = getPercent(maxString);
+
+                // printChromosome(i + 1);
+                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString) + " in "
+                        + String.format("%.2f", percent) + "% of population");
                 crossoverAllChromosomes();
                 mutationAllChromosomes();
             }
@@ -235,14 +239,14 @@ public class geneticAlgorithm {
                     count++;
                 } else
                     count = 0;
-
                 if (count > this.stop) {
                     printAnswer(i + 1, fitness(maxString));
                     return maxString;
                 }
                 maxString = chromosome[0];
-                //printChromosome(i + 1);
-                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString));
+                float percent = getPercent(maxString);
+                // printChromosome(i + 1);
+                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString)+" in " + String.format("%.2f",percent) + "% of population");
                 crossoverAllChromosomes();
                 mutationAllChromosomes();
             }
@@ -258,11 +262,22 @@ public class geneticAlgorithm {
     }
 
     public void printAnswer(int gen, int answer) {
-        System.out.println("\nAfter " + gen + " generations, best value is : " + answer);
+        System.out.println(
+                "\nAfter " + gen + " generations, best value is : " + answer );
+    }
+
+    public float getPercent(String maxString) {
+        int count = 0;
+        for (int i = 0; i < population; i++) {
+            if (maxString.equals(chromosome[i])) {
+                count++;
+            }
+        }
+        return (((float)count/ (float)population)*100);
     }
 
     public static void main(String[] args) {
-        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt", 20, 400, 3, 0, 150000);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase2.txt", 200, 750, 10, 50000, 7000);
         ga.printInput();
         long start, end;
         start = System.nanoTime();
@@ -274,7 +289,7 @@ public class geneticAlgorithm {
             }
         }
         end = System.nanoTime();
-        System.out.println("\nUse " + ((end - start) / 1000000) + " milliseconds " + "\n");
+        System.out.println("\nUse " + ((float)(end - start) / 1000000000) + " seconds " + "\n");
     }
 
 }
