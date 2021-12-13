@@ -227,8 +227,7 @@ public class geneticAlgorithm {
                 float percent = getPercent(maxString);
 
                 // printChromosome(i + 1);
-                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString) + " in "
-                        + String.format("%.2f", percent) + "% of population");
+                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString) );
                 crossoverAllChromosomes();
                 mutationAllChromosomes();
             }
@@ -246,7 +245,7 @@ public class geneticAlgorithm {
                 maxString = chromosome[0];
                 float percent = getPercent(maxString);
                 // printChromosome(i + 1);
-                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString)+" in " + String.format("%.2f",percent) + "% of population");
+                System.out.println("Best of Generation " + (i + 1) + " : " + fitness(maxString));
                 crossoverAllChromosomes();
                 mutationAllChromosomes();
             }
@@ -277,7 +276,7 @@ public class geneticAlgorithm {
     }
 
     public static void main(String[] args) {
-        geneticAlgorithm ga = new geneticAlgorithm("testcase3.txt", 50, 750, 3, 0, 10000);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase3.txt", 50, 750, 3, 0, 15000);
         ga.printInput();
         long start, end;
         start = System.nanoTime();
