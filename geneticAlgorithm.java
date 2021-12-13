@@ -277,7 +277,7 @@ public class geneticAlgorithm {
     }
 
     public static void main(String[] args) {
-        geneticAlgorithm ga = new geneticAlgorithm("testcase2.txt", 200, 750, 10, 50000, 7000);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase3.txt", 50, 750, 3, 0, 10000);
         ga.printInput();
         long start, end;
         start = System.nanoTime();
