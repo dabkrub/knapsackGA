@@ -175,21 +175,21 @@ public class geneticAlgorithm {
             int a = 0;
             int b = 0;
             int rank = rand.nextInt(100);
-            if (rank < 9) {
+            if (rank < 8) {
                 a = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 3 / 4;
             } else if (rank < 22) {
                 a = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 2 / 4;
-            } else if (rank < 45) {
+            } else if (rank < 43) {
                 a = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 1 / 4;
             } else {
                 a = rand.nextInt(this.population * 1 / 4 - 1);
             }
             rank = rand.nextInt(100);
-            if (rank < 9) {
+            if (rank < 8) {
                 b = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 3 / 4;
             } else if (rank < 22) {
                 b = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 2 / 4;
-            } else if (rank < 45) {
+            } else if (rank < 43) {
                 b = rand.nextInt(this.population * 1 / 4 - 1) + this.population * 1 / 4;
             } else {
                 b = rand.nextInt(this.population * 1 / 4 - 1);
@@ -276,7 +276,7 @@ public class geneticAlgorithm {
     }
 
     public static void main(String[] args) {
-        geneticAlgorithm ga = new geneticAlgorithm("testcase3.txt", 50, 750, 3, 0, 15000);
+        geneticAlgorithm ga = new geneticAlgorithm("testcase1.txt", 50, 740, 2, 0, 15000);
         ga.printInput();
         long start, end;
         start = System.nanoTime();
